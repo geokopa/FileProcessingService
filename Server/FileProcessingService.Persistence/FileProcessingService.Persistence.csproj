@@ -7,10 +7,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Context\" />
+    <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
+    <ProjectReference Include="..\FileProcessingService.Domain\FileProcessingService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

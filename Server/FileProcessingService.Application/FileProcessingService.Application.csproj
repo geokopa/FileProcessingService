@@ -8,4 +8,8 @@
     <ProjectReference Include="..\FileProcessingService.Domain\FileProcessingService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Interfaces\" />
+  </ItemGroup>
+
 </Project>

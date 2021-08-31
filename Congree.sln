@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Domai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Infrastructure.UnitTests", "Tests\FileProcessingService.Infrastructure.UnitTests\FileProcessingService.Infrastructure.UnitTests.csproj", "{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Persistence.UnitTests", "Tests\FileProcessingService.Persistence.UnitTests\FileProcessingService.Persistence.UnitTests.csproj", "{BEF48E13-49FD-4819-86D3-2887E816A817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF48E13-49FD-4819-86D3-2887E816A817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF48E13-49FD-4819-86D3-2887E816A817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF48E13-49FD-4819-86D3-2887E816A817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF48E13-49FD-4819-86D3-2887E816A817}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{1BCDF7FB-B4F5-485B-B0BD-227F140F5E53} = {7D7B5F26-8845-41CC-88BC-001CB980A67F}
 		{D224110D-D79A-4F2F-9132-7B0CDC58696A} = {7D7B5F26-8845-41CC-88BC-001CB980A67F}
 		{49C5A960-B3E1-4648-BFA9-A67B55DFABF4} = {99E6FC28-D4EA-45A1-BD4A-14D24657A84A}
+		{BEF48E13-49FD-4819-86D3-2887E816A817} = {99E6FC28-D4EA-45A1-BD4A-14D24657A84A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E05F136-D5E1-41EE-BF29-58EC3C2F55E1}

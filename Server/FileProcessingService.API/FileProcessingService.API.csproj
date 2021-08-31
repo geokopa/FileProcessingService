@@ -20,6 +20,7 @@
     <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
     <ProjectReference Include="..\FileProcessingService.Domain\FileProcessingService.Domain.csproj" />
     <ProjectReference Include="..\FileProcessingService.Infrastructure\FileProcessingService.Infrastructure.csproj" />
+    <ProjectReference Include="..\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
