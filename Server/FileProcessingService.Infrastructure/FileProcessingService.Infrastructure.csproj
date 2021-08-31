@@ -6,10 +6,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
+    <ProjectReference Include="..\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
   </ItemGroup>
 
 </Project>

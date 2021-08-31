@@ -8,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using System;
 using FileProcessingService.Persistence;
 using FileProcessingService.Persistence.Context;
+using FileProcessingService.Application;
+using FileProcessingService.Infrastructure;
 
 namespace FileProcessingService.API
 {
@@ -24,23 +26,21 @@ namespace FileProcessingService.API
         public void ConfigureServices(IServiceCollection services)
         {
             /*
-             * Implement Tracing
-             * Implement API Versioning
-             * Implement HealtChecks
-             * Implement Metrics
-             * Implement API Error Handling
+             * At this demo project, I think there is no need to implement api versioning
              */
-            services.AddApiVersioning(opt =>
-            {
-                opt.ReportApiVersions = true;
-                opt.AssumeDefaultVersionWhenUnspecified = true;
-                opt.DefaultApiVersion = ApiVersion.Default;
-            });
+            //services.AddApiVersioning(opt =>
+            //{
+            //    opt.ReportApiVersions = true;
+            //    opt.AssumeDefaultVersionWhenUnspecified = true;
+            //    opt.DefaultApiVersion = ApiVersion.Default;
+            //});
 
             services.AddHealthChecks()
                 .AddDbContextCheck<FileProcessingContext>();
 
             services.AddPersistence(Configuration);
+            services.AddApplication();
+            services.AddUnitOfWork();
 
             services.AddControllers();
 
@@ -73,7 +73,7 @@ namespace FileProcessingService.API
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
 
             app.UseAuthorization();

@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Server\FileProcessingService.Application\FileProcessingService.Application.csproj" />
+    <ProjectReference Include="..\..\Server\FileProcessingService.Infrastructure\FileProcessingService.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
