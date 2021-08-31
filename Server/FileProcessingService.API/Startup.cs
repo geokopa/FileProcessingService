@@ -1,18 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using FileProcessingService.Persistence;
+using FileProcessingService.Persistence.Context;
+using FileProcessingService.Application;
+using FileProcessingService.Infrastructure;
 
 namespace FileProcessingService.API
 {
@@ -29,22 +26,24 @@ namespace FileProcessingService.API
         public void ConfigureServices(IServiceCollection services)
         {
             /*
-             * Implement Tracing
-             * Implement API Versioning
-             * Implement HealtChecks
-             * Implement Metrics
-             * Implement API Error Handling
+             * At this demo project, I think there is no need to implement api versioning
              */
-            services.AddApiVersioning(opt =>
-            {
-                opt.ReportApiVersions = true;
-                opt.AssumeDefaultVersionWhenUnspecified = true;
-                opt.DefaultApiVersion = ApiVersion.Default;
-            });
-            services.AddHealthChecks();
-            //.AddDbContextCheck<>();
+            //services.AddApiVersioning(opt =>
+            //{
+            //    opt.ReportApiVersions = true;
+            //    opt.AssumeDefaultVersionWhenUnspecified = true;
+            //    opt.DefaultApiVersion = ApiVersion.Default;
+            //});
+
+            services.AddHealthChecks()
+                .AddDbContextCheck<FileProcessingContext>();
+
+            services.AddPersistence(Configuration);
+            services.AddApplication();
+            services.AddUnitOfWork();
 
             services.AddControllers();
+
             //TODO: check if swagger works with API Versioning
             services.AddSwaggerGen(c =>
             {
@@ -74,7 +73,7 @@ namespace FileProcessingService.API
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
 
             app.UseAuthorization();
