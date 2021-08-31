@@ -10,7 +10,9 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FileProcessingService.API
 {
@@ -33,10 +35,31 @@ namespace FileProcessingService.API
              * Implement Metrics
              * Implement API Error Handling
              */
+            services.AddApiVersioning(opt =>
+            {
+                opt.ReportApiVersions = true;
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.DefaultApiVersion = ApiVersion.Default;
+            });
+            services.AddHealthChecks();
+            //.AddDbContextCheck<>();
+
             services.AddControllers();
+            //TODO: check if swagger works with API Versioning
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FileProcessingService.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "File Processing API",
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "kopadze@gmail.com",
+                        Name = "George Kopadze",
+                        Url = new Uri("https://kopadze.ge")
+                    },
+                    Description = "File Processing API contains set of functionality to get content from uploaded file with statistical information"
+                });
             });
         }
 
@@ -51,13 +74,14 @@ namespace FileProcessingService.API
             }
 
             app.UseHttpsRedirection();
-
+            
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
         }
