@@ -29,8 +29,4 @@
     <ProjectReference Include="..\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
 </Project>

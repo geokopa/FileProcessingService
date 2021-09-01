@@ -14,7 +14,7 @@ namespace FileProcessingService.Persistence.Configurations
                 .HasMaxLength(350) //TODO: not sure that is enough
                 .IsRequired();
             builder.Property(t => t.SessionId)
-                .HasMaxLength(128)
+                .HasMaxLength(50)
                 .IsRequired();
             builder.Property(t => t.CreatedAt)
                 .IsRequired();

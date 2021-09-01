@@ -1,13 +1,14 @@
-﻿using FileProcessingService.Application.Common.Abstract;
-using FileProcessingService.Application.Common.Extensions;
+﻿using FileProcessingService.Application.Common.Extensions;
 using FileProcessingService.Application.Common.Interfaces.Processors;
 using FileProcessingService.Application.ProcessedFileContent.Commands;
+using FileProcessingService.Application.StatusMessages.Commands;
 using FileProcessingService.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -15,8 +16,9 @@ namespace FileProcessingService.Infrastructure.Processors
 {
     public class XmlDocumentProcessor : IXmlDocumentProcessor
     {
-        private readonly ILogger<XmlDocumentProcessor> _logger;
         public Dictionary<string, int> MatchingElements { get; set; }
+
+        private readonly ILogger<XmlDocumentProcessor> _logger;
         private readonly ISender _sender;
 
         public XmlDocumentProcessor(ILogger<XmlDocumentProcessor> logger, ISender sender)
@@ -28,7 +30,7 @@ namespace FileProcessingService.Infrastructure.Processors
 
         public async Task Process(Stream stream, string[] elements, string sessionId)
         {
-            XmlReaderSettings settings = new XmlReaderSettings
+            XmlReaderSettings settings = new()
             {
                 DtdProcessing = DtdProcessing.Parse,
                 Async = true
@@ -63,11 +65,20 @@ namespace FileProcessingService.Infrastructure.Processors
                         {
                             await _sender.Send(new CreateProcessedFileContentCommand(sessionId, innerText, key, duplicateStatistics));
                         }
-                        //SetStatusMessage(sessionId, $"{key} has found {foundElements[key]} times");
+                        await _sender.Send(new CreateStatusMessageCommand(sessionId, $"{key} found {MatchingElements[key]} times"));
                     }
                 }
-
             }
+        }
+
+        public string GetMatchingElementSummery()
+        {
+            StringBuilder builder = new();
+            foreach (var item in MatchingElements)
+            {
+                builder.AppendLine($"Element: {item.Key} has found {item.Value} times");
+            }
+            return builder.ToString();
         }
     }
 }

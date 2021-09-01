@@ -1,6 +1,10 @@
 ﻿using FileProcessingService.API.BackgroundServices;
 using FileProcessingService.API.Models;
 using FileProcessingService.Application.Common.Interfaces.Processors;
+using FileProcessingService.Application.StatusMessages.Commands;
+using FileProcessingService.Application.StatusMessages.Queries;
+using FileProcessingService.Infrastructure.Extensions;
+using FileProcessingService.Shared;
 using FileProcessingService.Shared.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,28 +22,29 @@ namespace FileProcessingService.API.Controllers
     [Route("api/[controller]")]
     public class FilesController : BaseController
     {
-        private readonly IMemoryCache _cache;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
         private readonly IXmlDocumentProcessor _documentProcessor;
 
-        public FilesController(ILogger<FilesController> logger, IMemoryCache cache, IBackgroundTaskQueue backgroundTaskQueue, IXmlDocumentProcessor documentProcessor)
+        public FilesController(IBackgroundTaskQueue backgroundTaskQueue, IXmlDocumentProcessor documentProcessor)
         {
-            _cache = cache;
             _backgroundTaskQueue = backgroundTaskQueue;
             _documentProcessor = documentProcessor;
         }
 
-        /*
-         * TODO: Configure timeouts and file upload max size
-         */
+        [HttpGet]
+        public IActionResult Get()
+        {
+            throw new Exception("Sample exception to test global exception middleware");
+        }
 
         [HttpPost]
+        [DisableRequestSizeLimit]
         public IActionResult Process([Required] IFormFile[] files, [Required] string sessionId, [Required] string elements)
         {
-            if (files.Length == 0)
+            if (files.Length == 0 || files.Any(x=>!IsValidXmlFile(x)))
                 return BadRequest();
 
-            //SetStatusMessage(sessionId, "Process Started");
+            Mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.ProcessStarted));
 
             foreach (var file in files)
             {
@@ -49,63 +54,25 @@ namespace FileProcessingService.API.Controllers
                 {
                     await _documentProcessor.Process(stream, elements.AsCleanedArray(), sessionId);
                 });
+
+                Mediator.Send(new CreateStatusMessageCommand(sessionId, _documentProcessor.GetMatchingElementSummery()));
+                Mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.ProcessFinished));
             }
-
-            StringBuilder builder = new();
-            foreach (var item in _documentProcessor.MatchingElements)
-            {
-                builder.AppendLine($"Element: {item.Key} has found {item.Value} times");
-            }
-
-            //SetStatusMessage(sessionId, builder.ToString());
-            //SetStatusMessage(sessionId, "Process Finished");
-
-            return Ok("File processing request has been received!");
+            return Ok(ResourceTexts.FileReceivedToProcess);
         }
-
-
 
         [HttpGet]
-        [Route("{sessionId}")]
-        public IActionResult GetStatus(string sessionId, DateTime? statusAfter)
+        [Route("status-info/{sessionId}")]
+        public IActionResult StatusInfo([Required] string sessionId, DateTime? statusAfter)
         {
-            List<StatusMessage> messages = new();
-
-            if (_cache.TryGetValue(sessionId, out messages))
-            {
-                if (statusAfter.HasValue)
-                {
-                    messages = messages.Where(x => x.TimeStamp > statusAfter.Value).ToList();
-                }
-            }
-
-            if (!messages.Any())
-                return NotFound();
-
-            return Ok(messages);
+            return Ok(Mediator.Send(new GetStatusMessageBySessionQuery(statusAfter, sessionId)));
         }
-
-
 
         #region Private Methods
-
-        private void SetStatusMessage(string sessionId, string message)
+        private static bool IsValidXmlFile(IFormFile file)
         {
-            List<StatusMessage> currentStatusMessages;
-            if (!_cache.TryGetValue(sessionId, out currentStatusMessages))
-            {
-                currentStatusMessages = new List<StatusMessage>();
-            }
-
-            currentStatusMessages.Add(new StatusMessage(message, DateTime.Now));
-            _cache.Set(sessionId, currentStatusMessages);
+            return file.ContentType == "text/xml" || file.ContentType == "application/xml";
         }
-        
         #endregion
-
     }
-
-
-
-
 }

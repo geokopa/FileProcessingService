@@ -12,6 +12,7 @@ namespace FileProcessingService.Persistence.Context
 
         public DbSet<ProcessedFileContent> ProcessedFileContents { get; set; }
         public DbSet<DuplicateWordStatistic> DuplicateWordStatistics { get; set; }
+        public DbSet<StatusMessage> StatusMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

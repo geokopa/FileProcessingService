@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\FileProcessingService.Shared\FileProcessingService.Shared.csproj" />
     <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
     <ProjectReference Include="..\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

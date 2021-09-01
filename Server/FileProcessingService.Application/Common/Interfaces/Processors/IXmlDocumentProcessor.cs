@@ -14,5 +14,6 @@ namespace FileProcessingService.Application.Common.Interfaces.Processors
         /// <param name="stream"></param>
         /// <returns>System.Threading.Task</returns>
         Task Process(Stream stream, string[] elements, string sessionId);
+        string GetMatchingElementSummery();
     }
 }
