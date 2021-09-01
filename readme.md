@@ -25,3 +25,6 @@
 - Heath Check Url: https://kopadze.ge/health
 
 
+# Configuration
+- If you need to test application using EF InMemory Provider, set "UseInMemoryDatabase" property to "True" into appsettings.json
+- When multiple request should be processed, default Task threashold is 2. if you want to override this setting, change in appsettings.json file the property "MaxNumOfParallelOperations" to N integer value. 

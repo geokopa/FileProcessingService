@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileProcessingService.Application.Common.Interfaces.Processors
@@ -13,7 +14,8 @@ namespace FileProcessingService.Application.Common.Interfaces.Processors
         /// </summary>
         /// <param name="stream"></param>
         /// <returns>System.Threading.Task</returns>
-        Task Process(Stream stream, string[] elements, string sessionId);
+        Task Process(Stream stream, string[] elements, string sessionId, CancellationToken ct);
+        Task Process(byte[] bytes, string[] elements, string sessionId, CancellationToken ct);
         string GetMatchingElementSummery();
     }
 }

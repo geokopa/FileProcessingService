@@ -1,18 +1,17 @@
+using FileProcessingService.API.BackgroundServices;
+using FileProcessingService.Application;
+using FileProcessingService.Infrastructure;
+using FileProcessingService.Persistence;
+using FileProcessingService.Persistence.Context;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
-using FileProcessingService.Persistence;
-using FileProcessingService.Persistence.Context;
-using FileProcessingService.Application;
-using FileProcessingService.Infrastructure;
 using System.Text.Json.Serialization;
-using FileProcessingService.API.BackgroundServices;
-using Hellang.Middleware.ProblemDetails;
 
 namespace FileProcessingService.API
 {
@@ -33,28 +32,15 @@ namespace FileProcessingService.API
             services.AddHostedService<QueuedHostedService>();
             services.AddProblemDetails();
 
-            /*
-             * At this demo project, I think there is no need to implement api versioning
-             */
-            //services.AddApiVersioning(opt =>
-            //{
-            //    opt.ReportApiVersions = true;
-            //    opt.AssumeDefaultVersionWhenUnspecified = true;
-            //    opt.DefaultApiVersion = ApiVersion.Default;
-            //});
-
-            services.AddHealthChecks()
-                .AddDbContextCheck<FileProcessingContext>();
+            services.AddHealthChecks().AddDbContextCheck<FileProcessingContext>();
 
             services.AddInfrastructure();
             services.AddPersistence(Configuration);
             services.AddApplication();
             services.AddUnitOfWork();
 
-            services.AddControllers()
-                    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
-            //TODO: check if swagger works with API Versioning
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

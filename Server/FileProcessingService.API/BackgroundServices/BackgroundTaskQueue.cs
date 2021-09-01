@@ -8,7 +8,7 @@ namespace FileProcessingService.API.BackgroundServices
     public class BackgroundTaskQueue : IBackgroundTaskQueue
     {
         private ConcurrentQueue<Func<CancellationToken, Task>> _workItems = new();
-        private SemaphoreSlim _signal = new SemaphoreSlim(0);
+        private SemaphoreSlim _signal = new(0);
 
         public void QueueBackgroundWorkItem(
             Func<CancellationToken, Task> workItem)
