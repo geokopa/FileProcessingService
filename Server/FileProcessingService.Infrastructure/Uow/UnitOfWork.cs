@@ -9,20 +9,35 @@ namespace FileProcessingService.Infrastructure.Uow
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
+        #region Private Fields
         private IProcessedFileContentRepository _processedFileContentRepository;
+        private IDuplicateWordStatisticRepository _duplicateWordStatisticRepository;
+        private IStatusMessageRepository _statusMessageRepository;
+
         private readonly FileProcessingContext _context;
+        #endregion Private Fields
 
         public UnitOfWork(FileProcessingContext context)
         {
             _context = context;
         }
 
+        #region Public Properties
         public IProcessedFileContentRepository ProcessedFileContentRepository => _processedFileContentRepository ?? new ProcessedFileContentRepository(_context);
+
+        public IDuplicateWordStatisticRepository DuplicateWordStatisticRepository => _duplicateWordStatisticRepository ?? new DuplicateWordStatisticsRepository(_context);
+
+        public IStatusMessageRepository StatusMessageRepository => _statusMessageRepository ?? new StatusMessageRepository(_context);
+        #endregion Public Properties
+
+        #region Methods
 
         public async Task CompleteAsync()
         {
             await _context.SaveChangesAsync();
         }
+
+        #endregion Methods
 
         #region Dispose
         private bool disposed = false;

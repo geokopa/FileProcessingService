@@ -8,15 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\FileProcessingService.Shared\FileProcessingService.Shared.csproj" />
     <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
     <ProjectReference Include="..\FileProcessingService.Domain\FileProcessingService.Domain.csproj" />
     <ProjectReference Include="..\FileProcessingService.Infrastructure\FileProcessingService.Infrastructure.csproj" />

@@ -1,9 +1,9 @@
 using System;
 using Xunit;
 
-namespace FileProcessingService.Persistence.UnitTests
+namespace FileProcessingService.UnitTests
 {
-    public class ProcessedFileContentPersistenseTests
+    public class UnitTest1
     {
         [Fact]
         public void Test1()

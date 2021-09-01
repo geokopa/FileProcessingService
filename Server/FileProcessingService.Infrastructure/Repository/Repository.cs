@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.Immutable;
 
 namespace FileProcessingService.Infrastructure.Repository
 {
@@ -14,6 +16,20 @@ namespace FileProcessingService.Infrastructure.Repository
         public Repository(DbContext context)
         {
             _set = context.Set<T>();
+        }
+
+        public IQueryable<T> Query(Expression<Func<T, bool>> expression = null)
+        {
+            if(expression != null)
+            {
+                return _set.Where(expression).AsQueryable();
+            }
+            return _set.AsQueryable<T>();
+        }
+
+        public async Task<IEnumerable<T>> FetchBy(Expression<Func<T, bool>> predicate)
+        {
+            return await _set.AsNoTracking().Where(predicate).ToListAsync();
         }
 
         public async Task AddAsync(T entity)

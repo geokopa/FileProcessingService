@@ -2,6 +2,7 @@
 using FileProcessingService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FileProcessingService.Infrastructure.Repository
@@ -12,9 +13,9 @@ namespace FileProcessingService.Infrastructure.Repository
         {
         }
 
-        public async Task<ProcessedFileContent> GetBySessionId(Guid id)
+        public async Task<IEnumerable<ProcessedFileContent>> GetBySessionId(string id)
         {
-            return await FirstOrDefaultAsync(x => x.SessionId == id);
+            return await Query(x => x.SessionId == id).Include(x=>x.DuplicateWordStatistics).ToListAsync();
         }
     }
 }
