@@ -1,8 +1,11 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileProcessingService.ConsoleApp
@@ -65,16 +68,19 @@ namespace FileProcessingService.ConsoleApp
                 }
                 try
                 {
-                    using var form = new MultipartFormDataContent();
-                    var Content = new ByteArrayContent(File.ReadAllBytes(filePath));
-                    Content.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-                    form.Add(Content, "file", Path.GetFileName(filePath));
-                    form.Add(new StringContent(Guid.NewGuid().ToString()), "sessionId");
-                    form.Add(new StringContent(elements), "elements");
-                    using HttpClient client = new();
-                    var response = await client.PostAsync(@"https://localhost:5001/api/file", form);
-                    
-                    if (response.IsSuccessStatusCode)
+                    var client = new RestClient("https://localhost:5001/api/files")
+                    {
+                        Timeout = -1
+                    };
+                    var request = new RestRequest(Method.POST);
+                    request.AddHeader("Content-Type", "multipart/form-data");
+                    request.AddFile("file", @"C:\Users\George Kopadze\Downloads\Compathy_Manual_ContentGrasp SX_en.xml", "text/xml");
+                    request.AddParameter("sessionId", "5a6b9ec8-dc46-4a11-8068-e7bb25ec8119");
+                    request.AddParameter("elements", "li;p");
+                    IRestResponse response = await client.ExecuteAsync(request);
+                    var data = response.Content;
+
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
                         Console.WriteLine("Success");
                     }

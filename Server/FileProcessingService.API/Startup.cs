@@ -39,6 +39,15 @@ namespace FileProcessingService.API
             services.AddApplication();
             services.AddUnitOfWork();
 
+            services.AddCors(option =>
+            {
+                option.AddPolicy("CORS", x => {
+                    x.AllowAnyMethod();
+                    x.AllowAnyOrigin();
+                    x.AllowAnyHeader();
+                });
+            });
+
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             services.AddSwaggerGen(c =>

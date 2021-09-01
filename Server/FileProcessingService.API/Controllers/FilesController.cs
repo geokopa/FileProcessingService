@@ -1,4 +1,5 @@
 ﻿using FileProcessingService.API.BackgroundServices;
+using FileProcessingService.API.Models;
 using FileProcessingService.Application.Common.Interfaces.Processors;
 using FileProcessingService.Application.StatusMessages.Queries;
 using FileProcessingService.Infrastructure.Extensions;
@@ -37,20 +38,18 @@ namespace FileProcessingService.API.Controllers
 
         [HttpPost]
         [DisableRequestSizeLimit]
-        public IActionResult Process([Required] IFormFile[] files, [Required] string sessionId, [Required] string elements)
+        public IActionResult Process(IFormFile file, [FromForm] FileUploadModel model)
         {
-            if (files.Length == 0 || files.Any(x => !IsValidXmlFile(x)))
-                return BadRequest();
-
-            foreach (var file in files)
+            if (file == null || !IsValidXmlFile(file))
+                return BadRequest("Please specify files.");
+            
+            _backgroundTaskQueue.QueueBackgroundWorkItem(async token =>
             {
-                _backgroundTaskQueue.QueueBackgroundWorkItem(async token =>
-                {
-                    var fileBytes = await AsMemoryByteArray(file);
-                    
-                    await _documentProcessor.Process(fileBytes, elements.AsCleanedArray(), sessionId, token);
-                });
-            }
+                var fileBytes = await AsMemoryByteArray(file);
+
+                await _documentProcessor.Process(fileBytes, model.Elements.AsCleanedArray(), model.SessionId, token);
+            });
+
             return Ok(ResourceTexts.FileReceivedToProcess);
         }
 
