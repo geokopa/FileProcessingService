@@ -1,5 +1,4 @@
-﻿using FileProcessingService.Application.Common.Interfaces.Uow;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -9,8 +8,6 @@ namespace FileProcessingService.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
             return services;
         }
