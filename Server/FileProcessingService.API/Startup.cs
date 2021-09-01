@@ -10,6 +10,9 @@ using FileProcessingService.Persistence;
 using FileProcessingService.Persistence.Context;
 using FileProcessingService.Application;
 using FileProcessingService.Infrastructure;
+using System.Text.Json.Serialization;
+using FileProcessingService.API.BackgroundServices;
+using Hellang.Middleware.ProblemDetails;
 
 namespace FileProcessingService.API
 {
@@ -25,6 +28,11 @@ namespace FileProcessingService.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddHostedService<QueuedHostedService>();
+            services.AddProblemDetails();
+
             /*
              * At this demo project, I think there is no need to implement api versioning
              */
@@ -38,11 +46,13 @@ namespace FileProcessingService.API
             services.AddHealthChecks()
                 .AddDbContextCheck<FileProcessingContext>();
 
+            services.AddInfrastructure();
             services.AddPersistence(Configuration);
             services.AddApplication();
             services.AddUnitOfWork();
 
-            services.AddControllers();
+            services.AddControllers()
+                    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             //TODO: check if swagger works with API Versioning
             services.AddSwaggerGen(c =>
@@ -71,6 +81,7 @@ namespace FileProcessingService.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FileProcessingService.API v1"));
             }
+            app.UseProblemDetails();
 
             app.UseHttpsRedirection();
 

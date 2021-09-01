@@ -10,6 +10,7 @@ namespace FileProcessingService.Infrastructure.Uow
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private IProcessedFileContentRepository _processedFileContentRepository;
+        private IDuplicateWordStatisticRepository _duplicateWordStatisticRepository;
         private readonly FileProcessingContext _context;
 
         public UnitOfWork(FileProcessingContext context)
@@ -18,6 +19,8 @@ namespace FileProcessingService.Infrastructure.Uow
         }
 
         public IProcessedFileContentRepository ProcessedFileContentRepository => _processedFileContentRepository ?? new ProcessedFileContentRepository(_context);
+
+        public IDuplicateWordStatisticRepository DuplicateWordStatisticRepository => _duplicateWordStatisticRepository ?? new DuplicateWordStatisticsRepository(_context);
 
         public async Task CompleteAsync()
         {

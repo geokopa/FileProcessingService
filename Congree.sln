@@ -12,23 +12,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.ConsoleApp", "Client\FileProcessingService.ConsoleApp\FileProcessingService.ConsoleApp.csproj", "{12E981D1-73C3-48A9-8BB3-C0946FABFC4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.ConsoleApp", "Client\FileProcessingService.ConsoleApp\FileProcessingService.ConsoleApp.csproj", "{12E981D1-73C3-48A9-8BB3-C0946FABFC4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.API", "Server\FileProcessingService.API\FileProcessingService.API.csproj", "{303562CF-43A2-4280-9E40-5BC0DB7EF210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.API", "Server\FileProcessingService.API\FileProcessingService.API.csproj", "{303562CF-43A2-4280-9E40-5BC0DB7EF210}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{99E6FC28-D4EA-45A1-BD4A-14D24657A84A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Application", "Server\FileProcessingService.Application\FileProcessingService.Application.csproj", "{F9C44268-F3F7-44E9-A365-1770CA43694B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Application", "Server\FileProcessingService.Application\FileProcessingService.Application.csproj", "{F9C44268-F3F7-44E9-A365-1770CA43694B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Persistence", "Server\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj", "{BF2B130D-27E0-425B-BD42-593E61317B0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Persistence", "Server\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj", "{BF2B130D-27E0-425B-BD42-593E61317B0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Infrastructure", "Server\FileProcessingService.Infrastructure\FileProcessingService.Infrastructure.csproj", "{1BCDF7FB-B4F5-485B-B0BD-227F140F5E53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Infrastructure", "Server\FileProcessingService.Infrastructure\FileProcessingService.Infrastructure.csproj", "{1BCDF7FB-B4F5-485B-B0BD-227F140F5E53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Domain", "Server\FileProcessingService.Domain\FileProcessingService.Domain.csproj", "{D224110D-D79A-4F2F-9132-7B0CDC58696A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Domain", "Server\FileProcessingService.Domain\FileProcessingService.Domain.csproj", "{D224110D-D79A-4F2F-9132-7B0CDC58696A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Infrastructure.UnitTests", "Tests\FileProcessingService.Infrastructure.UnitTests\FileProcessingService.Infrastructure.UnitTests.csproj", "{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Infrastructure.UnitTests", "Tests\FileProcessingService.Infrastructure.UnitTests\FileProcessingService.Infrastructure.UnitTests.csproj", "{49C5A960-B3E1-4648-BFA9-A67B55DFABF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Persistence.UnitTests", "Tests\FileProcessingService.Persistence.UnitTests\FileProcessingService.Persistence.UnitTests.csproj", "{BEF48E13-49FD-4819-86D3-2887E816A817}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Persistence.UnitTests", "Tests\FileProcessingService.Persistence.UnitTests\FileProcessingService.Persistence.UnitTests.csproj", "{BEF48E13-49FD-4819-86D3-2887E816A817}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C3440596-915A-45F7-88A9-9DDFEEAB418C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.Shared", "Shared\FileProcessingService.Shared\FileProcessingService.Shared.csproj", "{A2674278-7A73-4D72-86FA-422757D67E3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingServices.UnitTests", "FileProcessingServices.UnitTests\FileProcessingServices.UnitTests.csproj", "{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +74,14 @@ Global
 		{BEF48E13-49FD-4819-86D3-2887E816A817}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF48E13-49FD-4819-86D3-2887E816A817}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF48E13-49FD-4819-86D3-2887E816A817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2674278-7A73-4D72-86FA-422757D67E3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2674278-7A73-4D72-86FA-422757D67E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2674278-7A73-4D72-86FA-422757D67E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2674278-7A73-4D72-86FA-422757D67E3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +95,8 @@ Global
 		{D224110D-D79A-4F2F-9132-7B0CDC58696A} = {7D7B5F26-8845-41CC-88BC-001CB980A67F}
 		{49C5A960-B3E1-4648-BFA9-A67B55DFABF4} = {99E6FC28-D4EA-45A1-BD4A-14D24657A84A}
 		{BEF48E13-49FD-4819-86D3-2887E816A817} = {99E6FC28-D4EA-45A1-BD4A-14D24657A84A}
+		{A2674278-7A73-4D72-86FA-422757D67E3D} = {C3440596-915A-45F7-88A9-9DDFEEAB418C}
+		{95B367C3-C3DD-41D0-BD83-BC2105ABA5C0} = {99E6FC28-D4EA-45A1-BD4A-14D24657A84A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E05F136-D5E1-41EE-BF29-58EC3C2F55E1}

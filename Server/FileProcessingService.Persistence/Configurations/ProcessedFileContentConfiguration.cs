@@ -13,12 +13,13 @@ namespace FileProcessingService.Persistence.Configurations
             builder.Property(t => t.ElementName)
                 .HasMaxLength(350) //TODO: not sure that is enough
                 .IsRequired();
-            builder.Property(t => t.DuplicateWord)
-                .HasMaxLength(350);
             builder.Property(t => t.SessionId)
+                .HasMaxLength(128)
                 .IsRequired();
             builder.Property(t => t.CreatedAt)
                 .IsRequired();
+
+            builder.HasMany(x => x.DuplicateWordStatistics).WithOne(x => x.ProcessedFileContent).HasForeignKey(x => x.ProcessedFileContentId);
         }
     }
 }

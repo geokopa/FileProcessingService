@@ -23,7 +23,7 @@ namespace FileProcessingService.Infrastructure.UnitTests
         [Fact]
         public void AddAsyncShouldCreateNewEntity()
         {
-            _uow.ProcessedFileContentRepository.AddAsync(new Domain.Entities.ProcessedFileContent { SessionId = Guid.NewGuid(), ContentText = "Sample Text", ElementName = "P", DuplicateCount = 0, DuplicateWord = String.Empty, CreatedAt = DateTime.Now });
+            _uow.ProcessedFileContentRepository.AddAsync(new Domain.Entities.ProcessedFileContent { SessionId = Guid.NewGuid().ToString(), ContentText = "Sample Text", ElementName = "P", CreatedAt = DateTime.Now });
         }
 
     }
