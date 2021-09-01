@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\FileProcessingService.Shared\FileProcessingService.Shared.csproj" />
+    <ProjectReference Include="..\FileProcessingService.Application\FileProcessingService.Application.csproj" />
+    <ProjectReference Include="..\FileProcessingService.Persistence\FileProcessingService.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
+  </ItemGroup>
+
+</Project>
