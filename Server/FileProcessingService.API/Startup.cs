@@ -13,9 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +27,17 @@ namespace FileProcessingService.API
 {
     public class Startup
     {
+        static string XmlCommentsFilePath
+        {
+            get
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                return Path.Combine(basePath, fileName);
+            }
+        }
+
+        //C:\Users\George Kopadze\source\repos\Congree\Server\FileProcessingService.API\FileProcessingService.API.xml
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -72,6 +85,7 @@ namespace FileProcessingService.API
                     },
                     Description = "File Processing API contains set of functionality to get content from uploaded file with statistical information"
                 });
+                c.IncludeXmlComments(XmlCommentsFilePath);
             });
         }
 
@@ -82,10 +96,11 @@ namespace FileProcessingService.API
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FileProcessingService.API v1"));
+                app.UseDeveloperExceptionPage();
             }
+
             app.UseProblemDetails();
 
             app.UseHttpsRedirection();
