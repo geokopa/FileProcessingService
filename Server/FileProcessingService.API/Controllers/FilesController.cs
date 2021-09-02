@@ -1,15 +1,20 @@
 ﻿using FileProcessingService.API.BackgroundServices;
+using FileProcessingService.API.Models;
 using FileProcessingService.Application.Common.Interfaces.Processors;
+using FileProcessingService.Application.ProcessedFileContent.Queries;
 using FileProcessingService.Application.StatusMessages.Queries;
+using FileProcessingService.Domain.Entities;
 using FileProcessingService.Infrastructure.Extensions;
-using FileProcessingService.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FileProcessingService.API.Controllers
@@ -21,44 +26,68 @@ namespace FileProcessingService.API.Controllers
         private readonly ISender _sender;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
         private readonly IXmlDocumentProcessor _documentProcessor;
+        private readonly IConfiguration _configuration;
 
-        public FilesController(IBackgroundTaskQueue backgroundTaskQueue, IXmlDocumentProcessor documentProcessor, ISender sender)
+        public FilesController(IBackgroundTaskQueue backgroundTaskQueue, IXmlDocumentProcessor documentProcessor, ISender sender, IConfiguration configuration)
         {
             _backgroundTaskQueue = backgroundTaskQueue;
             _documentProcessor = documentProcessor;
             _sender = sender;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            throw new Exception("Sample exception to test global exception middleware");
+            _configuration = configuration;
         }
 
         [HttpPost]
         [DisableRequestSizeLimit]
-        public IActionResult Process([Required] IFormFile[] files, [Required] string sessionId, [Required] string elements)
+        public async Task<IActionResult> Process(IFormFile file, [FromForm] FileUploadModel model)
         {
-            if (files.Length == 0 || files.Any(x => !IsValidXmlFile(x)))
-                return BadRequest();
+            if (file == null || !IsValidXmlFile(file))
+                return BadRequest("Please specify files.");
 
-            foreach (var file in files)
+            var fileBytes = await AsMemoryByteArray(file);
+            _backgroundTaskQueue.QueueBackgroundWorkItem(async token =>
             {
-                _backgroundTaskQueue.QueueBackgroundWorkItem(async token =>
-                {
-                    var fileBytes = await AsMemoryByteArray(file);
-                    
-                    await _documentProcessor.Process(fileBytes, elements.AsCleanedArray(), sessionId, token);
-                });
-            }
-            return Ok(ResourceTexts.FileReceivedToProcess);
+                await _documentProcessor.Process(fileBytes, model.Elements.AsCleanedArray(), model.SessionId, token);
+            });
+
+            return Ok();
         }
 
         [HttpGet]
         [Route("status-info/{sessionId}")]
-        public async Task<IActionResult> StatusInfo([Required] string sessionId, DateTime? statusAfter)
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<StatusMessage>))]
+        public async Task<IActionResult> StatusInfo([Required] string sessionId)
         {
-            return Ok(await _sender.Send(new GetStatusMessageBySessionQuery(statusAfter, sessionId)));
+            string statusAfter = string.Empty;
+
+            if (Request.Headers.TryGetValue("statusAfter", out var dateValue))
+            {
+                statusAfter = dateValue;
+            }
+
+            var returnData = await _sender.Send(new GetStatusMessageBySessionQuery(statusAfter, sessionId));
+
+            bool completed = returnData.Any(x => x.Completed);
+            SetRetryHeader(completed);
+
+            if (!returnData.Any())
+                return NotFound();
+
+            return Ok(returnData);
+        }
+
+        [HttpGet]
+        [Route("processed/{sessionId}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<ProcessedFileContent>))]
+        public async Task<IActionResult> Processed(string sessionId)
+        {
+            var processedFile = await _sender.Send(new GetProcessedFileContentQuery { SessionId = sessionId });
+
+            if (!processedFile.Any())
+                return NotFound();
+
+            return Ok(processedFile);
         }
 
         #region Private Methods
@@ -72,6 +101,12 @@ namespace FileProcessingService.API.Controllers
             var stream = new MemoryStream();
             await file.CopyToAsync(stream);
             return stream.ToArray();
+        }
+
+        private void SetRetryHeader(bool completed)
+        {
+            Response.Headers.Add("Retry-After", _configuration.GetValue<int>("Headers:RetryAfter").ToString());
+            Response.Headers.Add("Completed", completed.ToString());
         }
         #endregion
     }

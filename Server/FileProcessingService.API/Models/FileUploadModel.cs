@@ -9,5 +9,6 @@ namespace FileProcessingService.API.Models
         public string SessionId { get; set; }
         [Required]
         public string Elements { get; set; }
+        
     }
 }

@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,7 +49,7 @@ namespace FileProcessingService.Infrastructure.Processors
 
             if (ct.IsCancellationRequested)
             {
-                await mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.Canceled), ct);
+                await mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.Canceled, true), ct);
                 ct.ThrowIfCancellationRequested();
             }
 
@@ -95,7 +94,7 @@ namespace FileProcessingService.Infrastructure.Processors
             }
 
             await mediator.Send(new CreateStatusMessageCommand(sessionId, GetMatchingElementSummery()), ct);
-            await mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.ProcessFinished), ct);
+            await mediator.Send(new CreateStatusMessageCommand(sessionId, ResourceTexts.ProcessFinished, true), ct);
         }
 
         public string GetMatchingElementSummery()

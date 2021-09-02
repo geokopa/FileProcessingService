@@ -6,6 +6,7 @@ using FileProcessingService.Persistence.Context;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +40,15 @@ namespace FileProcessingService.API
             services.AddApplication();
             services.AddUnitOfWork();
 
+            services.AddCors(option =>
+            {
+                option.AddPolicy("CORS", x => {
+                    x.AllowAnyMethod();
+                    x.AllowAnyOrigin();
+                    x.AllowAnyHeader();
+                });
+            });
+
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             services.AddSwaggerGen(c =>
@@ -61,6 +71,8 @@ namespace FileProcessingService.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            UpdateDatabase(app);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -80,6 +92,19 @@ namespace FileProcessingService.API
                 endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<FileProcessingContext>();
+            if (context.Database.IsSqlServer())
+            {
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+            }
         }
     }
 }

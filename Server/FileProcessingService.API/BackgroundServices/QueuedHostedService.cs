@@ -43,12 +43,9 @@ namespace FileProcessingService.API.BackgroundServices
                     {
                         while (!cancellationToken.IsCancellationRequested)
                         {
-                            _logger.LogInformation("Waiting background task...");
-
                             var workItem = await TaskQueue.DequeueAsync(cancellationToken);
                             try
                             {
-                                _logger.LogInformation("Got background task, executing...");
                                 await workItem(cancellationToken);
                             }
                             catch (Exception ex)

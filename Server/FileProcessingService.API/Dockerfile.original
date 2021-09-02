@@ -8,11 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Server/FileProcessingService.API/FileProcessingService.API.csproj", "Server/FileProcessingService.API/"]
-COPY ["Server/FileProcessingService.Persistence/FileProcessingService.Persistence.csproj", "Server/FileProcessingService.Persistence/"]
-COPY ["Server/FileProcessingService.Application/FileProcessingService.Application.csproj", "Server/FileProcessingService.Application/"]
-COPY ["Server/FileProcessingService.Domain/FileProcessingService.Domain.csproj", "Server/FileProcessingService.Domain/"]
-COPY ["Server/FileProcessingService.Infrastructure/FileProcessingService.Infrastructure.csproj", "Server/FileProcessingService.Infrastructure/"]
-COPY ["Shared/FileProcessingService.Shared/FileProcessingService.Shared.csproj", "Shared/FileProcessingService.Shared/"]
 RUN dotnet restore "Server/FileProcessingService.API/FileProcessingService.API.csproj"
 COPY . .
 WORKDIR "/src/Server/FileProcessingService.API"
