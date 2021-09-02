@@ -11,11 +11,13 @@ namespace FileProcessingService.Application.StatusMessages.Commands
     {
         public string Message { get; private set; }
         public string SessionId { get; private set; }
-        
-        public CreateStatusMessageCommand(string sessionId, string message)
+        public bool Completed { get; private set; }
+
+        public CreateStatusMessageCommand(string sessionId, string message, bool completed = false)
         {
             Message = message;
             SessionId = sessionId;
+            Completed = completed;
         }
     }
 
@@ -31,7 +33,7 @@ namespace FileProcessingService.Application.StatusMessages.Commands
         public async Task<Unit> Handle(CreateStatusMessageCommand request, CancellationToken cancellationToken)
         {
 
-            await _unitOfWork.StatusMessageRepository.AddAsync(new StatusMessage { CreatedAt = DateTime.Now, Message = request.Message, SessionId = request.SessionId });
+            await _unitOfWork.StatusMessageRepository.AddAsync(new StatusMessage { CreatedAt = DateTime.Now, Message = request.Message, SessionId = request.SessionId, Completed = request.Completed });
             await _unitOfWork.CompleteAsync();
 
             return Unit.Value;

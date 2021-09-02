@@ -1,21 +1,32 @@
-﻿using RestSharp;
+﻿using FileProcessingService.ConsoleApp.Models;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileProcessingService.ConsoleApp
 {
     class Program
     {
+        readonly static FileProcessingApiClient _apiClient = new();
+        private static readonly string _sessionId = Guid.NewGuid().ToString();
+        private const string BaseURL = "https://localhost:5001/api";
+        private static ExtendedConsole console = new();
+
         static void Main(string[] args)
         {
+            DisplayWelcomeScreen();
+
+            Console.ReadKey();
+        }
+
+        private static string DisplayWelcomeScreen()
+        {
             string path = "";
-            ExtendedConsole console = new();
+
             console.AddOption(new Option("Specify File Path", () =>
             {
                 console.ClearMainMenu();
@@ -27,29 +38,37 @@ namespace FileProcessingService.ConsoleApp
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     Console.WriteLine("Searching in directory: " + filePath);
-                    if (Directory.Exists(filePath))
+
+                    if (IsDirectory(filePath))
                     {
-                        Directory.GetFiles(filePath).ToList().ForEach(s =>
+                        if (Directory.Exists(filePath))
                         {
-                            console.AddOption(new Option(s, async ()  =>
+                            // TODO: get only xml files
+                            Directory.GetFiles(filePath).Where(x => x.EndsWith("xml")).ToList().ForEach(s =>
                             {
-                                path = s;
-                                await UploadFile(path);
-                            }));
-                        });
-                        console.AddExit();
-                        console.WriteMenu(console.Options, console.Options[0]);
+                                console.AddOption(new Option(s, async () =>
+                                {
+                                    path = s;
+                                    await UploadFile(path);
+                                }));
+                            });
+                            console.AddExit();
+                            console.WriteMenu(console.Options, console.Options[0]);
+                        }
+                        else
+                            Console.WriteLine("path not found");
                     }
                     else
-                        Console.WriteLine("path not found");
+                    {
+                        UploadFile(filePath).Wait();
+                    }
                 }
             }));
-            console.AddMainMenu();
+            console.AddExit();
             console.Init();
 
-            Console.ReadKey();
+            return path;
         }
-
 
         static async Task UploadFile(string filePath)
         {
@@ -62,27 +81,39 @@ namespace FileProcessingService.ConsoleApp
             if (!string.IsNullOrEmpty(elements))
             {
                 Console.WriteLine("Uploading file started..");
+
                 if (!File.Exists(filePath))
                 {
                     return;
                 }
+
                 try
                 {
-                    var client = new RestClient("https://localhost:5001/api/files")
-                    {
-                        Timeout = -1
-                    };
-                    var request = new RestRequest(Method.POST);
-                    request.AddHeader("Content-Type", "multipart/form-data");
-                    request.AddFile("file", @"C:\Users\George Kopadze\Downloads\Compathy_Manual_ContentGrasp SX_en.xml", "text/xml");
-                    request.AddParameter("sessionId", "5a6b9ec8-dc46-4a11-8068-e7bb25ec8119");
-                    request.AddParameter("elements", "li;p");
-                    IRestResponse response = await client.ExecuteAsync(request);
-                    var data = response.Content;
+                    string retryAfter = DateTime.Now.ToString();
+                    (string data, HttpStatusCode statusCode) response = await _apiClient.Upload($"{BaseURL}/files", filePath, _sessionId, elements);
 
-                    if (response.StatusCode == HttpStatusCode.OK)
+                    if (response.statusCode == HttpStatusCode.OK)
                     {
-                        Console.WriteLine("Success");
+                        (string data, HttpStatusCode statusCode) result = await _apiClient.GetDataWithPollingAsync($"{BaseURL}/files/status-info/{_sessionId}", retryAfter);
+
+                        if (result.statusCode == HttpStatusCode.OK)
+                        {
+                            var messageModel = JsonConvert.DeserializeObject<IEnumerable<StatusReponseModel>>(result.data);
+
+                            foreach (var item in messageModel)
+                            {
+                                if (item.Completed)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                }
+
+                                Console.WriteLine($"{item.Message} - {item.CreatedAt} - [{item.Completed}]");
+                            }
+                            Console.ResetColor();
+
+                            if (Console.ReadKey(false).Key == ConsoleKey.Enter)
+                                Environment.Exit(0);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -98,6 +129,13 @@ namespace FileProcessingService.ConsoleApp
                 Console.WriteLine("XML element is required!");
                 Console.ResetColor();
             }
+        }
+
+        static bool IsDirectory(string path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+
+            return attr.HasFlag(FileAttributes.Directory);
         }
     }
 }

@@ -11,12 +11,21 @@ namespace FileProcessingService.Application.StatusMessages.Queries
     public class GetStatusMessageBySessionQuery : IRequest<IEnumerable<StatusMessage>>
     {
         public string SessionId { get; private set; }
-        public DateTime? RequestTime { get; private set; }
+        public string RequestTime { get; private set; }
+        public DateTime? RequestDate { get; private set; }
 
-        public GetStatusMessageBySessionQuery(DateTime? requestTime, string sessionId)
+        public GetStatusMessageBySessionQuery(string requestTime, string sessionId)
         {
             RequestTime = requestTime;
             SessionId = sessionId;
+
+            if (!string.IsNullOrEmpty(requestTime))
+            {
+                if (DateTime.TryParse(requestTime, out DateTime result))
+                {
+                    RequestDate = result;
+                }
+            }
         }
     }
 
@@ -31,7 +40,7 @@ namespace FileProcessingService.Application.StatusMessages.Queries
 
         public async Task<IEnumerable<StatusMessage>> Handle(GetStatusMessageBySessionQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.StatusMessageRepository.GetBySessionId(request.SessionId, request.RequestTime);
+            return await _unitOfWork.StatusMessageRepository.GetBySessionId(request.SessionId, request.RequestDate);
         }
     }
 }

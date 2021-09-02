@@ -65,13 +65,6 @@ namespace FileProcessingService.ConsoleApp
             AddOption(new Option("Exit", () => { Environment.Exit(0); }));
         }
 
-        public void AddMainMenu()
-        {
-            AddOption(new Option("Check Status", () => { }));
-            AddOption(new Option("Get File Path", () => { }));
-            AddOption(new Option("List args", () => { }));
-            AddExit();
-        }
 
         public void AddOption(Option option)
         {
