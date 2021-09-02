@@ -1,5 +1,5 @@
 # Congree File Processing Service
-
+[![Build status](https://dev.azure.com/kopadze/Congree/_apis/build/status/Congree-ASP.NET%20Core-CI)](https://dev.azure.com/kopadze/Congree/_build/latest?definitionId=13)
 
 # Used technologies and dependencies
 - [ASP.NET Core] ASP.NET Core 5 Web API 

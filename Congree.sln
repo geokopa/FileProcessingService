@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C34405
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.Shared", "Shared\FileProcessingService.Shared\FileProcessingService.Shared.csproj", "{A2674278-7A73-4D72-86FA-422757D67E3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService.UnitTests", "Tests\FileProcessingService.UnitTests\FileProcessingService.UnitTests.csproj", "{821E5552-B667-4DE1-B3EF-C0C4FB6B1DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileProcessingService.UnitTests", "Tests\FileProcessingService.UnitTests\FileProcessingService.UnitTests.csproj", "{821E5552-B667-4DE1-B3EF-C0C4FB6B1DB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
