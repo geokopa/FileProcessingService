@@ -21,8 +21,8 @@
 - Automatic builds are implemented in Azure Pipelines
 
 # Environments
-- Production: https://kopadze.ge/api/swagger
-- Heath Check Url: https://kopadze.ge/health
+- Production: http://congree.kopadze.ge
+- Heath Check Url: http://congree.kopadze.ge/health
 
 
 # Configuration
