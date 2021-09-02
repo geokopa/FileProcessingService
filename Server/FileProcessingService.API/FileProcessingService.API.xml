@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileProcessingService.API</name>
+    </assembly>
+    <members>
+        <member name="M:FileProcessingService.API.Controllers.FilesController.Process(Microsoft.AspNetCore.Http.IFormFile,FileProcessingService.API.Models.FileUploadModel)">
+            <summary>
+            Upload XML file for processing. 
+            </summary>
+            <param name="file">XML file for processing</param>
+            <param name="model">Uniqueu Identifier SessionID and Elements e.g. (li;p;a)</param>
+            <returns></returns>
+            <remarks>
+            Consumer can specify elements you need to extract in uploaded document and also retreive some statistical inforamtion about word duplicates, found elements, and etc.
+            </remarks>
+        </member>
+        <member name="M:FileProcessingService.API.Controllers.FilesController.StatusInfo(System.String)">
+            <summary>
+            Returns statuses of file processing with specified SessionID
+            </summary>
+            <param name="sessionId">Process Uniqueue Identificator</param>
+            <returns>Returns list of status messages</returns>
+        </member>
+        <member name="M:FileProcessingService.API.Controllers.FilesController.Processed(System.String)">
+            <summary>
+            Get processed files data
+            </summary>
+            <param name="sessionId">Process Uniqueue Identifier</param>
+            <returns>Returns list of processed files data</returns>
+            <remarks>
+            Data will include word duplication statistics and also elements found in parsed xml document.
+            </remarks>
+        </member>
+        <member name="P:FileProcessingService.API.Models.FileUploadModel.SessionId">
+            <summary>
+            Process Uniqueue Identificator (CorrelationID)
+            </summary>
+        </member>
+        <member name="P:FileProcessingService.API.Models.FileUploadModel.Elements">
+            <summary>
+            XML elements like [p;li;a]
+            </summary>
+        </member>
+    </members>
+</doc>

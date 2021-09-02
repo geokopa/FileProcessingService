@@ -36,8 +36,19 @@ namespace FileProcessingService.API.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Upload XML file for processing. 
+        /// </summary>
+        /// <param name="file">XML file for processing</param>
+        /// <param name="model">Uniqueu Identifier SessionID and Elements e.g. (li;p;a)</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Consumer can specify elements you need to extract in uploaded document and also retreive some statistical inforamtion about word duplicates, found elements, and etc.
+        /// </remarks>
         [HttpPost]
         [DisableRequestSizeLimit]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Process(IFormFile file, [FromForm] FileUploadModel model)
         {
             if (file == null || !IsValidXmlFile(file))
@@ -52,6 +63,11 @@ namespace FileProcessingService.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Returns statuses of file processing with specified SessionID
+        /// </summary>
+        /// <param name="sessionId">Process Uniqueue Identificator</param>
+        /// <returns>Returns list of status messages</returns>
         [HttpGet]
         [Route("status-info/{sessionId}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -76,6 +92,14 @@ namespace FileProcessingService.API.Controllers
             return Ok(returnData);
         }
 
+        /// <summary>
+        /// Get processed files data
+        /// </summary>
+        /// <param name="sessionId">Process Uniqueue Identifier</param>
+        /// <returns>Returns list of processed files data</returns>
+        /// <remarks>
+        /// Data will include word duplication statistics and also elements found in parsed xml document.
+        /// </remarks>
         [HttpGet]
         [Route("processed/{sessionId}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

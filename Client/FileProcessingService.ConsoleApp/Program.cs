@@ -1,4 +1,5 @@
-﻿using FileProcessingService.ConsoleApp.Models;
+﻿
+using FileProcessingService.ConsoleApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace FileProcessingService.ConsoleApp
         readonly static FileProcessingApiClient _apiClient = new();
         private static readonly string _sessionId = Guid.NewGuid().ToString();
         private const string BaseURL = "https://localhost:5001/api";
-        private static ExtendedConsole console = new();
+        private static readonly ExtendedConsole console = new();
 
         static void Main(string[] args)
         {
@@ -27,23 +28,22 @@ namespace FileProcessingService.ConsoleApp
         {
             string path = "";
 
-            console.AddOption(new Option("Specify File Path", () =>
+            console.AddOption(new Option("Specify File/Folder Path", () =>
             {
                 console.ClearMainMenu();
                 Console.Clear();
-                Console.Write("Please paste file path you want to send: ");
+                Console.Write("Please paste xml file path to send or directory you want search xml files: ");
 
                 string filePath = Console.ReadLine();
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    Console.WriteLine("Searching in directory: " + filePath);
-
                     if (IsDirectory(filePath))
                     {
+                        Console.WriteLine("Searching in directory: " + filePath);
+
                         if (Directory.Exists(filePath))
                         {
-                            // TODO: get only xml files
                             Directory.GetFiles(filePath).Where(x => x.EndsWith("xml")).ToList().ForEach(s =>
                             {
                                 console.AddOption(new Option(s, async () =>
@@ -80,7 +80,7 @@ namespace FileProcessingService.ConsoleApp
 
             if (!string.IsNullOrEmpty(elements))
             {
-                Console.WriteLine("Uploading file started..");
+                Console.WriteLine("Processing started..");
 
                 if (!File.Exists(filePath))
                 {
@@ -107,7 +107,7 @@ namespace FileProcessingService.ConsoleApp
                                     Console.ForegroundColor = ConsoleColor.Green;
                                 }
 
-                                Console.WriteLine($"{item.Message} - {item.CreatedAt} - [{item.Completed}]");
+                                Console.WriteLine($"{item.Message} - {item.CreatedAt}");
                             }
                             Console.ResetColor();
 
