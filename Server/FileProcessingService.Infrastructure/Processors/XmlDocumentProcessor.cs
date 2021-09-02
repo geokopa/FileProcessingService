@@ -64,7 +64,7 @@ namespace FileProcessingService.Infrastructure.Processors
             {
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (!string.IsNullOrWhiteSpace(reader.Name) && elements.Contains(reader.Name))
+                    if (!reader.IsEmptyElement && !string.IsNullOrWhiteSpace(reader.Name) && elements.Contains(reader.Name))
                     {
                         string key = reader.Name.ToLowerInvariant();
 
