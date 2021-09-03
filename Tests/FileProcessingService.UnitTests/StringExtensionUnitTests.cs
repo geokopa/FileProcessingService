@@ -14,7 +14,7 @@ namespace FileProcessingService.UnitTests
             string[] words = input.AsCleanedArray();
 
             // Assert
-            Assert.Equal(3, words.Count());
+            Assert.Equal(3, words.Length);
         }
     }
 }

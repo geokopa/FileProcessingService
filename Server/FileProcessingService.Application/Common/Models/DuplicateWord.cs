@@ -10,7 +10,7 @@ namespace FileProcessingService.Application.Common.Models
         public DuplicateWord(string word, int count)
         {
             if (string.IsNullOrEmpty(word))
-                throw new ArgumentNullException($"{nameof(word)} argument must have a value");
+                throw new ArgumentNullException(nameof(word), $"{nameof(word)} argument must have a value");
 
             Word = word;
             Count = count;

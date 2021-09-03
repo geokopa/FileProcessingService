@@ -12,12 +12,11 @@ namespace FileProcessingService.ConsoleApp
 {
     class Program
     {
-        readonly static FileProcessingApiClient _apiClient = new();
         private static readonly string _sessionId = Guid.NewGuid().ToString();
         private const string BaseURL = "https://localhost:5001/api";
         private static readonly ExtendedConsole console = new();
 
-        static void Main(string[] args)
+        static void Main()
         {
             DisplayWelcomeScreen();
 
@@ -53,7 +52,7 @@ namespace FileProcessingService.ConsoleApp
                                 }));
                             });
                             console.AddExit();
-                            console.WriteMenu(console.Options, console.Options[0]);
+                            ExtendedConsole.WriteMenu(console.Options, console.Options[0]);
                         }
                         else
                             Console.WriteLine("path not found");
@@ -90,11 +89,11 @@ namespace FileProcessingService.ConsoleApp
                 try
                 {
                     string retryAfter = DateTime.Now.ToString();
-                    (string data, HttpStatusCode statusCode) response = await _apiClient.Upload($"{BaseURL}/files", filePath, _sessionId, elements);
+                    (string data, HttpStatusCode statusCode) = await FileProcessingApiClient.Upload($"{BaseURL}/files", filePath, _sessionId, elements);
 
-                    if (response.statusCode == HttpStatusCode.OK)
+                    if (statusCode == HttpStatusCode.OK)
                     {
-                        (string data, HttpStatusCode statusCode) result = await _apiClient.GetDataWithPollingAsync($"{BaseURL}/files/status-info/{_sessionId}", retryAfter);
+                        (string data, HttpStatusCode statusCode) result = await FileProcessingApiClient.GetDataWithPollingAsync($"{BaseURL}/files/status-info/{_sessionId}", retryAfter);
 
                         if (result.statusCode == HttpStatusCode.OK)
                         {
