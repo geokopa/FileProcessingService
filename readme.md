@@ -20,10 +20,6 @@
 - Branching Strategy: GitFlow
 - Automatic builds are implemented in Azure Pipelines
 
-# Environments
-- Production: http://congree.kopadze.ge
-- Heath Check Url: http://congree.kopadze.ge/health
-
 
 # Configuration
 - If you need to test application using EF InMemory Provider, set "UseInMemoryDatabase" property to "True" into appsettings.json
