@@ -23,11 +23,42 @@ namespace FileProcessingService.Infrastructure.Uow
         }
 
         #region Public Properties
-        public IProcessedFileContentRepository ProcessedFileContentRepository => _processedFileContentRepository ?? new ProcessedFileContentRepository(_context);
 
-        public IDuplicateWordStatisticRepository DuplicateWordStatisticRepository => _duplicateWordStatisticRepository ?? new DuplicateWordStatisticsRepository(_context);
+        public IProcessedFileContentRepository ProcessedFileContentRepository
+        {
+            get
+            {
+                if(_processedFileContentRepository == null)
+                {
+                    _processedFileContentRepository = new ProcessedFileContentRepository(_context);
+                }
+                return _processedFileContentRepository;
+            }
+        }
 
-        public IStatusMessageRepository StatusMessageRepository => _statusMessageRepository ?? new StatusMessageRepository(_context);
+        public IDuplicateWordStatisticRepository DuplicateWordStatisticRepository
+        {
+            get
+            {
+                if (_duplicateWordStatisticRepository == null)
+                {
+                    _duplicateWordStatisticRepository = new DuplicateWordStatisticsRepository(_context);
+                }
+                return _duplicateWordStatisticRepository;
+            }
+        }
+
+        public IStatusMessageRepository StatusMessageRepository
+        {
+            get
+            {
+                if (_statusMessageRepository == null)
+                {
+                    _statusMessageRepository = new StatusMessageRepository(_context);
+                }
+                return _statusMessageRepository;
+            }
+        }
         #endregion Public Properties
 
         #region Methods

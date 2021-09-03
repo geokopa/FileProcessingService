@@ -120,7 +120,7 @@ namespace FileProcessingService.API.Controllers
             return file.ContentType == "text/xml" || file.ContentType == "application/xml";
         }
 
-        private async Task<byte[]> AsMemoryByteArray(IFormFile file)
+        private static async Task<byte[]> AsMemoryByteArray(IFormFile file)
         {
             var stream = new MemoryStream();
             await file.CopyToAsync(stream);

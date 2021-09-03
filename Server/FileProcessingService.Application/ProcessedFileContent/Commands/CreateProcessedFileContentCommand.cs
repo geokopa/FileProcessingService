@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FileProcessingService.Application.ProcessedFileContent.Commands
 {
-    public class CreateProcessedFileContentCommand : IRequest<bool>
+    public class CreateProcessedFileContentCommand : IRequest<Unit>
     {
         public string SessionId { get; private set; }
         public string ContentText { get; private set; }
@@ -25,7 +25,7 @@ namespace FileProcessingService.Application.ProcessedFileContent.Commands
         }
     }
 
-    public class CreateProcessedFileContentCommandHandler : IRequestHandler<CreateProcessedFileContentCommand, bool>
+    public class CreateProcessedFileContentCommandHandler : IRequestHandler<CreateProcessedFileContentCommand, Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -34,36 +34,28 @@ namespace FileProcessingService.Application.ProcessedFileContent.Commands
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> Handle(CreateProcessedFileContentCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateProcessedFileContentCommand request, CancellationToken cancellationToken)
         {
-            var result = false;
-            try
+            var entity = new Domain.Entities.ProcessedFileContent
             {
-                var entity = new Domain.Entities.ProcessedFileContent
-                {
-                    ContentText = request.ContentText,
-                    CreatedAt = DateTime.Now,
-                    ElementName = request.ElementName,
-                    SessionId = request.SessionId
-                };
+                ContentText = request.ContentText,
+                CreatedAt = DateTime.Now,
+                ElementName = request.ElementName,
+                SessionId = request.SessionId
+            };
 
-                entity.DuplicateWordStatistics.AddRange(request.Duplicates.Select(x => new Domain.Entities.DuplicateWordStatistic
-                {
-                    CreatedAt = DateTime.Now,
-                    DuplicateCount = x.Count,
-                    DuplicateWord = x.Word,
-                    SessionId = request.SessionId
-                }));
-
-                await _unitOfWork.ProcessedFileContentRepository.AddAsync(entity);
-                await _unitOfWork.CompleteAsync();
-                result = true;
-            }
-            catch (Exception ex)
+            entity.DuplicateWordStatistics.AddRange(request.Duplicates.Select(x => new Domain.Entities.DuplicateWordStatistic
             {
-                throw;
-            }
-            return result;
+                CreatedAt = DateTime.Now,
+                DuplicateCount = x.Count,
+                DuplicateWord = x.Word,
+                SessionId = request.SessionId
+            }));
+
+            await _unitOfWork.ProcessedFileContentRepository.AddAsync(entity);
+            await _unitOfWork.CompleteAsync();
+
+            return Unit.Value;
         }
     }
 }

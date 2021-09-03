@@ -85,7 +85,7 @@ namespace FileProcessingService.ConsoleApp
             Console.ResetColor();
         }
 
-        public void WriteMenu(List<Option> options, Option selectedOption)
+        public static void WriteMenu(List<Option> options, Option selectedOption)
         {
             Console.Clear();
 
