@@ -1,5 +1,8 @@
 ﻿
 using FileProcessingService.ConsoleApp.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,11 +16,17 @@ namespace FileProcessingService.ConsoleApp
     class Program
     {
         private static readonly string _sessionId = Guid.NewGuid().ToString();
-        private const string BaseURL = "https://localhost:5001/api";
+        private static string BaseURL = "";
         private static readonly ExtendedConsole console = new();
+        public static IConfigurationRoot configuration;
 
         static void Main()
         {
+            ServiceCollection serviceCollection = new();
+            ConfigureServices(serviceCollection);
+            
+            BaseURL = configuration["FileProcessingServiceAPI:Endpoint"].ToString();
+
             DisplayWelcomeScreen();
 
             Console.ReadKey();
@@ -135,6 +144,20 @@ namespace FileProcessingService.ConsoleApp
             FileAttributes attr = File.GetAttributes(path);
 
             return attr.HasFlag(FileAttributes.Directory);
+        }
+
+        private static void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddLogging();
+
+            // Build configuration
+            configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+
+            // Add access to generic IConfigurationRoot
+            serviceCollection.AddSingleton(configuration);
         }
     }
 }
