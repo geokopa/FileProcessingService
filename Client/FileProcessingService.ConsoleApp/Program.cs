@@ -1,5 +1,8 @@
 ﻿
 using FileProcessingService.ConsoleApp.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,13 +15,18 @@ namespace FileProcessingService.ConsoleApp
 {
     class Program
     {
-        readonly static FileProcessingApiClient _apiClient = new();
         private static readonly string _sessionId = Guid.NewGuid().ToString();
-        private const string BaseURL = "https://localhost:5001/api";
+        private static string BaseURL = "";
         private static readonly ExtendedConsole console = new();
+        public static IConfigurationRoot configuration;
 
-        static void Main(string[] args)
+        static void Main()
         {
+            ServiceCollection serviceCollection = new();
+            ConfigureServices(serviceCollection);
+            
+            BaseURL = configuration["FileProcessingServiceAPI:Endpoint"].ToString();
+
             DisplayWelcomeScreen();
 
             Console.ReadKey();
@@ -53,7 +61,7 @@ namespace FileProcessingService.ConsoleApp
                                 }));
                             });
                             console.AddExit();
-                            console.WriteMenu(console.Options, console.Options[0]);
+                            ExtendedConsole.WriteMenu(console.Options, console.Options[0]);
                         }
                         else
                             Console.WriteLine("path not found");
@@ -90,11 +98,11 @@ namespace FileProcessingService.ConsoleApp
                 try
                 {
                     string retryAfter = DateTime.Now.ToString();
-                    (string data, HttpStatusCode statusCode) response = await _apiClient.Upload($"{BaseURL}/files", filePath, _sessionId, elements);
+                    (string data, HttpStatusCode statusCode) = await FileProcessingApiClient.Upload($"{BaseURL}/files", filePath, _sessionId, elements);
 
-                    if (response.statusCode == HttpStatusCode.OK)
+                    if (statusCode == HttpStatusCode.OK)
                     {
-                        (string data, HttpStatusCode statusCode) result = await _apiClient.GetDataWithPollingAsync($"{BaseURL}/files/status-info/{_sessionId}", retryAfter);
+                        (string data, HttpStatusCode statusCode) result = await FileProcessingApiClient.GetDataWithPollingAsync($"{BaseURL}/files/status-info/{_sessionId}", retryAfter);
 
                         if (result.statusCode == HttpStatusCode.OK)
                         {
@@ -136,6 +144,20 @@ namespace FileProcessingService.ConsoleApp
             FileAttributes attr = File.GetAttributes(path);
 
             return attr.HasFlag(FileAttributes.Directory);
+        }
+
+        private static void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddLogging();
+
+            // Build configuration
+            configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+
+            // Add access to generic IConfigurationRoot
+            serviceCollection.AddSingleton(configuration);
         }
     }
 }

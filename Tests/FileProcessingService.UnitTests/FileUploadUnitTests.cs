@@ -19,8 +19,6 @@ namespace FileProcessingService.UnitTests
             request.AddParameter("sessionId", "5a6b9ec8-dc46-4a11-8068-e7bb25ec8119");
             request.AddParameter("elements", "li;p");
             IRestResponse response = await client.ExecuteAsync(request);
-            var data = response.Content;
-
             Assert.Equal("200", response.StatusCode.ToString());
         }
     }

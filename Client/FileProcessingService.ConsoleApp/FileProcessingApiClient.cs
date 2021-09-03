@@ -13,21 +13,7 @@ namespace FileProcessingService.ConsoleApp
     {
         private static readonly HttpClient client = new();
 
-        public async Task CheckStatus()
-        {
-            var client = new RestClient("https://localhost:5001/api/Files/status-info/74b3b20f-c324-43c0-ba45-3fc8f52d62ca")
-            {
-                Timeout = -1
-            };
-            var request = new RestRequest(Method.GET);
-            IRestResponse response = await client.ExecuteAsync(request);
-
-            var body = JsonConvert.DeserializeObject(response.Content);
-
-            Console.WriteLine(response.Content);
-        }
-
-        public async Task<(string response, HttpStatusCode status)> Upload(string url, string path, string sessionId, string elements)
+        public static async Task<(string response, HttpStatusCode status)> Upload(string url, string path, string sessionId, string elements)
         {
             var client = new RestClient(url)
             {
@@ -45,7 +31,7 @@ namespace FileProcessingService.ConsoleApp
             return (response: data, status: response.StatusCode);
         }
 
-        public async Task<(string response, HttpStatusCode statusCode)> GetDataWithPollingAsync(string url, string retryAfter, string host = null)
+        public static async Task<(string response, HttpStatusCode statusCode)> GetDataWithPollingAsync(string url, string retryAfter)
         {
             bool completed = false;
             int requestCount = 0;
